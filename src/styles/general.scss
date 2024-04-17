@@ -4,6 +4,7 @@ body {
   background-image: url("./assets/background.jpg");
   background-size: cover;
   height: 100vh;
+  overflow: hidden;
   .card {
     background-color: rgba($color: white, $alpha: 0.3);
   }
@@ -19,5 +20,5 @@ th {
 }
 
 .img-wrapper {
-  height: 400px;
+  height: 300px;
 }

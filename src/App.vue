@@ -48,10 +48,17 @@ export default {
 
       if (this.cpu_life <= 0) {
         console.log("Player Win");
+        this.cpu_life = 0;
+        setTimeout(() => alert("Player Win!!!"), 500);
       } else if (this.player_life <= 0) {
         console.log("cpu Win");
+        this.player_life = 0;
+        setTimeout(() => alert("Cpu Win!!!"), 500);
       } else if ((this.cpu_life <= 0) & (this.player_life <= 0)) {
         console.log("Draw");
+        this.player_life = 0;
+        this.cpu_life = 0;
+        setTimeout(() => alert("Draw"), 500);
       }
     },
   },
@@ -60,10 +67,10 @@ export default {
 
 <template>
   <div
-    class="container my-4 d-flex flex-column justify-content-between align-items-center"
+    class="container my-5 d-flex flex-column justify-content-between align-items-center"
   >
-    <div class="">
-      <button @click="fetchCharacters()" class="btn btn-secondary">
+    <div class="mt-3">
+      <button @click="fetchCharacters()" class="btn btn-primary fs-4">
         Generate Character
       </button>
     </div>
@@ -90,14 +97,16 @@ export default {
                 <tr>
                   <td>{{ player.attack }}</td>
                   <td>{{ player.defence }}</td>
-                  <td>{{ player_life }}</td>
+                  <td class="text-danger">
+                    <strong>{{ player_life }}</strong>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-      <div class="col-2">
+      <div v-if="player" class="col-2">
         <img src="./assets/vs.png" alt="" class="img-fluid" />
       </div>
       <div class="col-5">
@@ -123,7 +132,9 @@ export default {
                 <tr>
                   <td>{{ cpu.attack }}</td>
                   <td>{{ cpu.defence }}</td>
-                  <td>{{ cpu_life }}</td>
+                  <td class="text-danger">
+                    <strong>{{ cpu.life }}</strong>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -133,7 +144,10 @@ export default {
     </div>
   </div>
   <div class="d-flex justify-content-center align-items-center">
-    <button @click="play()" class="btn btn-danger">Fight!</button>
+    <button v-if="player" @click="play()" class="btn btn-danger fs-4">
+      <i class="fa-solid fa-hand-fist fa-rotate-90"></i> Fight!
+      <i class="fa-solid fa-hand-fist fa-rotate-270"></i>
+    </button>
   </div>
 </template>
 
