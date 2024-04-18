@@ -133,7 +133,7 @@ export default {
                   <td>{{ cpu.attack }}</td>
                   <td>{{ cpu.defence }}</td>
                   <td class="text-danger">
-                    <strong>{{ cpu.life }}</strong>
+                    <strong>{{ cpu_life }}</strong>
                   </td>
                 </tr>
               </tbody>
