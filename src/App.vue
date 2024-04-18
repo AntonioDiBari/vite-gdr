@@ -16,18 +16,30 @@ export default {
       return Math.floor(Math.random() * (max - min + 1) + min);
     },
 
-    fetchCharacters() {
-      let url_player = this.baseURL + this.randomNumber(1, 13);
-      let url_cpu = this.baseURL + this.randomNumber(1, 13);
+    fetchCharactersPlayer() {
+      let url_player = this.baseURL + this.randomNumber(1, 6);
 
-      while (url_player === url_cpu) {
-        url_cpu = this.baseURL + this.randomNumber(1, 13);
-      }
+
+      // while (url_player === url_cpu) {
+      //   url_cpu = this.baseURL + this.randomNumber(1, 13);
+      // }
 
       axios.get(url_player).then((response) => {
         this.player = response.data;
         this.player_life = response.data.life;
       });
+
+    },
+
+    fetchCharactersCpu() {
+
+      let url_cpu = this.baseURL + this.randomNumber(7, 13);
+
+      // while (url_cpu === url_player) {
+      //   url_cpu = this.baseURL + this.randomNumber(1, 13);
+      // }
+
+
       axios.get(url_cpu).then((response) => {
         this.cpu = response.data;
         this.cpu_life = response.data.life;
@@ -66,14 +78,23 @@ export default {
 </script>
 
 <template>
-  <div
-    class="container my-5 d-flex flex-column justify-content-between align-items-center"
-  >
-    <div class="mt-3">
-      <button @click="fetchCharacters()" class="btn btn-primary fs-4">
-        Generate Character
-      </button>
+  <div class="container my-5 d-flex flex-column justify-content-between align-items-center">
+
+    <div class="container d-flex justify-content-around">
+
+      <div class="mt-3">
+        <button @click="fetchCharactersPlayer()" class="btn btn-primary fs-4">
+          Generate Player Character
+        </button>
+      </div>
+
+      <div class="mt-3">
+        <button @click="fetchCharactersCpu()" class="btn btn-primary fs-4">
+          Generate Cpu Character
+        </button>
+      </div>
     </div>
+
     <div class="row mt-5 w-100 align-items-center">
       <div class="col-5">
         <div v-if="player" class="card border-0">
@@ -81,9 +102,7 @@ export default {
           <div class="img-wrapper d-flex justify-content-center">
             <img :src="player.type.image" alt="" class="img-fluid h-100" />
           </div>
-          <div
-            class="card-body d-flex flex-column justify-content-center align-items-center"
-          >
+          <div class="card-body d-flex flex-column justify-content-center align-items-center">
             <h2>{{ player.name }}</h2>
             <table class="text-center">
               <thead>
@@ -106,7 +125,7 @@ export default {
           </div>
         </div>
       </div>
-      <div v-if="player" class="col-2">
+      <div v-if="player, cpu" class="col-2">
         <img src="./assets/vs.png" alt="" class="img-fluid" />
       </div>
       <div class="col-5">
@@ -116,9 +135,7 @@ export default {
             <img :src="cpu.type.image" alt="" class="img-fluid h-100" />
           </div>
 
-          <div
-            class="card-body d-flex flex-column justify-content-center align-items-center"
-          >
+          <div class="card-body d-flex flex-column justify-content-center align-items-center">
             <h2>{{ cpu.name }}</h2>
             <table class="text-center">
               <thead>
