@@ -9,20 +9,32 @@ export default {
       cpu: null,
       player_life: 0,
       cpu_life: 0,
+      characters: null,
+      result_player: null,
+
+
     };
   },
+
+  created() {
+    this.fetchCharacters();
+  },
+
   methods: {
     randomNumber(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
     },
 
-    fetchCharactersPlayer() {
-      let url_player = this.baseURL + this.randomNumber(1, 6);
+    fetchCharacters() {
+      axios.get(this.baseURL).then((response) => {
+        this.characters = response.data;
+      });
+    },
+
+    fetchCharactersPlayer(playerId) {
+      let url_player = this.baseURL + playerId;
 
 
-      // while (url_player === url_cpu) {
-      //   url_cpu = this.baseURL + this.randomNumber(1, 13);
-      // }
 
       axios.get(url_player).then((response) => {
         this.player = response.data;
@@ -31,13 +43,11 @@ export default {
 
     },
 
-    fetchCharactersCpu() {
+    fetchCharactersCpu(cpuId) {
 
-      let url_cpu = this.baseURL + this.randomNumber(7, 13);
+      let url_cpu = this.baseURL + cpuId;
 
-      // while (url_cpu === url_player) {
-      //   url_cpu = this.baseURL + this.randomNumber(1, 13);
-      // }
+
 
 
       axios.get(url_cpu).then((response) => {
@@ -60,17 +70,28 @@ export default {
 
       if (this.cpu_life <= 0) {
         console.log("Player Win");
+        this.result_player = true;
         this.cpu_life = 0;
-        setTimeout(() => alert("Player Win!!!"), 500);
+        setTimeout(() => alert("PLAYER WIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"), 200);
+        setTimeout(() => this.player = null, 500);
+        setTimeout(() => this.cpu = null, 500);
       } else if (this.player_life <= 0) {
         console.log("cpu Win");
+        this.result_player = false;
         this.player_life = 0;
-        setTimeout(() => alert("Cpu Win!!!"), 500);
+        setTimeout(() => alert("CPU WIN!!!!!!!!!!!!!!!!!!!!!!!!!!"), 200);
+        setTimeout(() => this.player = null, 500);
+        setTimeout(() => this.cpu = null, 500);
       } else if ((this.cpu_life <= 0) & (this.player_life <= 0)) {
         console.log("Draw");
+
         this.player_life = 0;
         this.cpu_life = 0;
-        setTimeout(() => alert("Draw"), 500);
+        setTimeout(() => alert("Draw"), 200);
+        setTimeout(() => this.player = null, 500);
+        setTimeout(() => this.cpu = null, 500);
+
+
       }
     },
   },
@@ -78,11 +99,40 @@ export default {
 </script>
 
 <template>
-  <div class="container my-5 d-flex flex-column justify-content-between align-items-center">
+  <div class=" my-5 d-flex flex-column justify-content-between align-items-center main-container">
 
-    <div class="container d-flex justify-content-around">
+    <div class=" d-flex justify-content-around main-container">
 
-      <div class="mt-3">
+      <div class="row justify-content-between mt-4 row-main">
+        <div class="col-6 col1">
+
+          <h2 class="mb-3 text-center botton-select">Select Player</h2>
+          <div class="row justify-content-center">
+            <div class="col-1 d-flex justify-content-center p-0 " v-for="character in characters">
+              <div :class="{ 'selected': player && player.id === character.id }"
+                @click="fetchCharactersPlayer(character.id)" class="card card-char p-1">
+                <img :src="character.type.image" alt="" class="img-fluid h-100" />
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-6 col2">
+          <h2 class="mb-3 text-center botton-select">Select Cpu</h2>
+          <div class="row justify-content-center">
+            <div class="col-1 d-flex justify-content-center p-0 " v-for="character in characters">
+              <div :class="{ 'selected': cpu && cpu.id === character.id }" @click="fetchCharactersCpu(character.id)"
+                class="card card-char p-1">
+                <img :src="character.type.image" alt="" class="img-fluid h-100" />
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+        <!-- <div class="mt-3">
         <button @click="fetchCharactersPlayer()" class="btn btn-primary fs-4">
           Generate Player Character
         </button>
@@ -93,78 +143,88 @@ export default {
           Generate Cpu Character
         </button>
       </div>
-    </div>
+    </div> -->
 
-    <div class="row mt-5 w-100 align-items-center">
-      <div class="col-5">
-        <div v-if="player" class="card border-0">
-          <h2 class="text-center">Player</h2>
-          <div class="img-wrapper d-flex justify-content-center">
-            <img :src="player.type.image" alt="" class="img-fluid h-100" />
+
+
+
+
+
+        <div class="row mt-5 w-100 align-items-center">
+          <div class="col-5">
+            <div v-if="player" class="card border-0">
+              <h2 class="text-center">Player</h2>
+              <div class="img-wrapper d-flex justify-content-center">
+                <img :src="player.type.image" alt="" class="img-fluid h-100" />
+              </div>
+              <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                <h2>{{ player.name }}</h2>
+                <table class="text-center">
+                  <thead>
+                    <tr>
+                      <th>Attack</th>
+                      <th>Defence</th>
+                      <th>Life</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ player.attack }}</td>
+                      <td>{{ player.defence }}</td>
+                      <td class="text-danger">
+                        <strong>{{ player_life }}</strong>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
-          <div class="card-body d-flex flex-column justify-content-center align-items-center">
-            <h2>{{ player.name }}</h2>
-            <table class="text-center">
-              <thead>
-                <tr>
-                  <th>Attack</th>
-                  <th>Defence</th>
-                  <th>Life</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{{ player.attack }}</td>
-                  <td>{{ player.defence }}</td>
-                  <td class="text-danger">
-                    <strong>{{ player_life }}</strong>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div v-if="player, cpu" class="col-2">
+            <img src="./assets/vs.png" alt="" class="img-fluid" />
+
+            <div class="d-flex justify-content-center align-items-center mt-5">
+              <button v-if="player" @click="play()" class="btn btn-danger fs-4">
+                <i class="fa-solid fa-hand-fist fa-rotate-90"></i> Fight!
+                <i class="fa-solid fa-hand-fist fa-rotate-270"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-5">
+            <div v-if="cpu" class="card border-0">
+              <h2 class="text-center">CPU</h2>
+              <div class="img-wrapper d-flex justify-content-center">
+                <img :src="cpu.type.image" alt="" class="img-fluid h-100" />
+              </div>
+
+              <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                <h2>{{ cpu.name }}</h2>
+                <table class="text-center">
+                  <thead>
+                    <tr>
+                      <th>Attack</th>
+                      <th>Defence</th>
+                      <th>Life</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ cpu.attack }}</td>
+                      <td>{{ cpu.defence }}</td>
+                      <td class="text-danger">
+                        <strong>{{ cpu_life }}</strong>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div v-if="player, cpu" class="col-2">
-        <img src="./assets/vs.png" alt="" class="img-fluid" />
-      </div>
-      <div class="col-5">
-        <div v-if="cpu" class="card border-0">
-          <h2 class="text-center">CPU</h2>
-          <div class="img-wrapper d-flex justify-content-center">
-            <img :src="cpu.type.image" alt="" class="img-fluid h-100" />
-          </div>
 
-          <div class="card-body d-flex flex-column justify-content-center align-items-center">
-            <h2>{{ cpu.name }}</h2>
-            <table class="text-center">
-              <thead>
-                <tr>
-                  <th>Attack</th>
-                  <th>Defence</th>
-                  <th>Life</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{{ cpu.attack }}</td>
-                  <td>{{ cpu.defence }}</td>
-                  <td class="text-danger">
-                    <strong>{{ cpu_life }}</strong>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+
     </div>
-  </div>
-  <div class="d-flex justify-content-center align-items-center">
-    <button v-if="player" @click="play()" class="btn btn-danger fs-4">
-      <i class="fa-solid fa-hand-fist fa-rotate-90"></i> Fight!
-      <i class="fa-solid fa-hand-fist fa-rotate-270"></i>
-    </button>
   </div>
 </template>
 

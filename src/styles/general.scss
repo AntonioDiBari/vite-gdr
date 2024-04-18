@@ -5,6 +5,7 @@ body {
   background-size: cover;
   height: 100vh;
   overflow: hidden;
+
   .card {
     background-color: rgba($color: white, $alpha: 0.3);
   }
@@ -21,4 +22,50 @@ th {
 
 .img-wrapper {
   height: 300px;
+}
+
+.card-char {
+  margin-bottom: 10px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.botton-select {
+  border: 3px solid black;
+  border-radius: 40px;
+  background-color: rgba($color: white, $alpha: 0.3);
+  padding: 15px;
+  font-weight: bold;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+
+.selected {
+  border: 5px solid yellow;
+  transform: scale(120%);
+}
+
+.main-container {
+  width: 1500px;
+  margin: 0 auto;
+}
+
+.col-1 {
+  width: calc(100% / 7);
+}
+
+.col-6 {
+  width: calc((100% / 2) - 1rem);
+}
+
+.row-main {
+  gap: 1rem;
+}
+
+.win {
+  border: 5px solid green !important;
+}
+
+.lose {
+  border: 5px solid red !important;
 }
